@@ -19,16 +19,16 @@ var STATIC_FILES = [
   "https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css"
 ];
 
-// в кэш не сохраняется больше, например 3 элементов, остальное удаляется можем передать любое число: 10, 25..
-function trimCache(cacheName, maxItems) {
-  caches.open(cacheName).then(function(cache) {
-    return cache.keys().then(function(keys) {
-      if (keys.length > maxItems) {
-        cache.delete(keys[0]).then(trimCache(cacheName, maxItems));
-      }
-    });
-  });
-}
+// // в кэш не сохраняется больше, например 3 элементов, остальное удаляется можем передать любое число: 10, 25..
+// function trimCache(cacheName, maxItems) {
+//   caches.open(cacheName).then(function(cache) {
+//     return cache.keys().then(function(keys) {
+//       if (keys.length > maxItems) {
+//         cache.delete(keys[0]).then(trimCache(cacheName, maxItems));
+//       }
+//     });
+//   });
+// }
 
 self.addEventListener("install", e => {
   console.log("The service worker is being installed.", e);
@@ -112,7 +112,7 @@ self.addEventListener("fetch", e => {
     e.respondWith(
       caches.open(CACHE_DYNAMIC_NAME).then(cache => {
         return fetch(e.request).then(res => {
-          trimCache(CACHE_DYNAMIC_NAME, 3); // обрезать кэш до трёх элементов
+          // trimCache(CACHE_DYNAMIC_NAME, 3); // обрезать кэш до трёх элементов
           cache.put(e.request, res.clone());
           return res;
         });
@@ -129,7 +129,7 @@ self.addEventListener("fetch", e => {
           return fetch(e.request)
             .then(res => {
               return caches.open(CACHE_DYNAMIC_NAME).then(cache => {
-                trimCache(CACHE_DYNAMIC_NAME, 3); // обрезать кэш до трёх элементов
+                // trimCache(CACHE_DYNAMIC_NAME, 3); // обрезать кэш до трёх элементов
                 cache.put(e.request.url, res.clone());
                 return res;
               });
