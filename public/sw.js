@@ -79,3 +79,52 @@ self.addEventListener("fetch", e => {
     // .catch(err => console.log(err))
   );
 });
+
+/*
+// Strategy: Cache Only
+self.addEventListener("fetch", e => {
+  e.respondWith(
+    // caches
+    //   .match(e.request)
+    //   .then(response => {
+    //     return response;
+    //   })
+    //   .catch(err => console.log(err))
+
+    caches.match(e.request) // or just that
+  );
+});
+*/
+
+/*
+// Strategy: Network Only
+self.addEventListener("fetch", e => {
+  e.respondWith(fetch(e.request));
+});
+*/
+
+/*
+// Strategy: Network with Cache Fallback
+self.addEventListener("fetch", e => {
+  e.respondWith(
+    // firstable fetch request, and if catch err, cache fallback
+    // fetch(e.request).catch(err => {
+    //   // console.log(err);
+    //   return caches.match(e.request);
+    // })
+
+    // the same, but with dynamic cache
+    fetch(e.request)
+      .then(res => {
+        return caches.open(CACHE_DYNAMIC_NAME).then(cache => {
+          cache.put(e.request.url, res.clone());
+          return res;
+        });
+      })
+      .catch(err => {
+        // console.log(err);
+        return caches.match(e.request);
+      })
+  );
+});
+*/
