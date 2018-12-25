@@ -84,14 +84,41 @@ self.addEventListener("fetch", e => {
 
 // Strategy: Cache then Network & Dynamic caching
 self.addEventListener("fetch", e => {
-  e.respondWith(
-    caches.open(CACHE_DYNAMIC_NAME).then(cache => {
-      return fetch(e.requset).then(res => {
-        cache.put(e.requset, res.clone());
-        return res;
-      });
-    })
-  );
+  var url = "https://httpbin.org/get";
+
+  if (e.request.url.indexOf(url) > -1) {
+    e.respondWith(
+      caches.open(CACHE_DYNAMIC_NAME).then(cache => {
+        return fetch(e.request).then(res => {
+          cache.put(e.request, res.clone());
+          return res;
+        });
+      })
+    );
+  } else {
+    e.respondWith(
+      caches.match(e.request).then(response => {
+        if (response) {
+          return response;
+        } else {
+          return fetch(e.request)
+            .then(res => {
+              return caches.open(CACHE_DYNAMIC_NAME).then(cache => {
+                cache.put(e.request.url, res.clone());
+                return res;
+              });
+            })
+            .catch(err => {
+              // console.log(err);
+              return caches.open(CACHE_STATIC_NAME).then(cache => {
+                return cache.match("/offline.html");
+              });
+            });
+        }
+      })
+      // .catch(err => console.log(err))
+    );
+  }
 });
 
 /*
