@@ -1,6 +1,6 @@
 // если мы что-либо изменим в файлах/скриптах, то эти изменения не применятся, так как приложение берёт файлы из кэша, а в кэше у нас всё ещё старая версия файлов, чтобы это исправить нам поможет версионирование, каждый раз когда мы: поменяли стили/изменили скрипты/добавили картинки/html-блок и т.д., нам нужно изменить версию кэша
-var CACHE_STATIC_NAME = "static-v3";
-var CACHE_DYNAMIC_NAME = "dynamic-v2";
+var CACHE_STATIC_NAME = "static-v5";
+var CACHE_DYNAMIC_NAME = "dynamic-v3";
 
 self.addEventListener("install", e => {
   console.log("The service worker is being installed.", e);
@@ -13,6 +13,7 @@ self.addEventListener("install", e => {
       cache.addAll([
         "/",
         "/index.html",
+        "/offline.html",
         "/src/js/app.js",
         "/src/js/feed.js",
         "/src/js/promise.js",
@@ -56,22 +57,25 @@ self.addEventListener("fetch", e => {
 
   // достаём файлы из кэша, если есть файлы в кэше то берём их, если нет то делаем запрос
   e.respondWith(
-    caches
-      .match(e.request)
-      .then(response => {
-        if (response) {
-          return response;
-        } else {
-          return fetch(e.request)
-            .then(res => {
-              return caches.open(CACHE_DYNAMIC_NAME).then(cache => {
-                cache.put(e.request.url, res.clone());
-                return res;
-              });
-            })
-            .catch(err => console.log(err));
-        }
-      })
-      .catch(err => console.log(err))
+    caches.match(e.request).then(response => {
+      if (response) {
+        return response;
+      } else {
+        return fetch(e.request)
+          .then(res => {
+            return caches.open(CACHE_DYNAMIC_NAME).then(cache => {
+              cache.put(e.request.url, res.clone());
+              return res;
+            });
+          })
+          .catch(err => {
+            // console.log(err);
+            return caches.open(CACHE_STATIC_NAME).then(cache => {
+              return cache.match("/offline.html");
+            });
+          });
+      }
+    })
+    // .catch(err => console.log(err))
   );
 });
