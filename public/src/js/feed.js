@@ -21,14 +21,14 @@ function openCreatePostModal() {
     deferredPrompt = null;
   }
 
-  // это только для примера, удалим сервисворкеры при открытии openCreatePostModal
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.getRegistrations().then(function(registrations) {
-      for (var i = 0; i < registrations.length; i++) {
-        registrations[i].unregister();
-      }
-    });
-  }
+  // // это только для примера, удалим сервисворкеры при открытии openCreatePostModal
+  // if ("serviceWorker" in navigator) {
+  //   navigator.serviceWorker.getRegistrations().then(function(registrations) {
+  //     for (var i = 0; i < registrations.length; i++) {
+  //       registrations[i].unregister();
+  //     }
+  //   });
+  // }
 }
 
 function closeCreatePostModal() {
