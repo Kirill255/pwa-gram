@@ -1,10 +1,14 @@
+// если мы что-либо изменим в файлах/скриптах, то эти изменения не применятся, так как приложение берёт файлы из кэша, а в кэше у нас всё ещё старая версия файлов, чтобы это исправить нам поможет версионирование, каждый раз когда мы: поменяли стили/изменили скрипты/добавили картинки/html-блок и т.д., нам нужно изменить версию кэша
+var CACHE_STATIC_NAME = "static-v3";
+var CACHE_DYNAMIC_NAME = "dynamic-v2";
+
 self.addEventListener("install", e => {
   console.log("The service worker is being installed.", e);
   // caches.open(); // https://developer.mozilla.org/en-US/docs/Web/API/Cache
   // e.waitUntil(); // https://developer.mozilla.org/en-US/docs/Web/API/ExtendableEvent/waitUntil
   // нам нужно открыть кэш, но это асинхронная операция, поэтому мы используем метод .waitUntil(), и открываем кэш внутри него, "static" - это любое название кэша, например "static-v1"
   e.waitUntil(
-    caches.open("static").then(cache => {
+    caches.open(CACHE_STATIC_NAME).then(cache => {
       console.log("The service worker is precaching app shell");
       cache.addAll([
         "/",
@@ -27,6 +31,21 @@ self.addEventListener("install", e => {
 
 self.addEventListener("activate", e => {
   console.log("The service worker is being activated.", e);
+
+  e.waitUntil(
+    // удаляем все старые/любые версии кэшей которые не равны текущей версии
+    caches.keys().then(keyList => {
+      return Promise.all(
+        keyList.map(key => {
+          if (key !== CACHE_STATIC_NAME && key !== CACHE_DYNAMIC_NAME) {
+            console.log("The service worker is removing old cache.", key);
+            return caches.delete(key);
+          }
+        })
+      );
+    })
+  );
+
   return self.clients.claim();
 });
 
@@ -45,7 +64,7 @@ self.addEventListener("fetch", e => {
         } else {
           return fetch(e.request)
             .then(res => {
-              return caches.open("dynamic").then(cache => {
+              return caches.open(CACHE_DYNAMIC_NAME).then(cache => {
                 cache.put(e.request.url, res.clone());
                 return res;
               });
