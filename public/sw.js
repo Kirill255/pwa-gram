@@ -50,6 +50,7 @@ self.addEventListener("activate", e => {
   return self.clients.claim();
 });
 
+/*
 self.addEventListener("fetch", e => {
   // console.log("The service worker is fetching something.", e);
   // e.respondWith(null);
@@ -77,6 +78,19 @@ self.addEventListener("fetch", e => {
       }
     })
     // .catch(err => console.log(err))
+  );
+});
+*/
+
+// Strategy: Cache then Network & Dynamic caching
+self.addEventListener("fetch", e => {
+  e.respondWith(
+    caches.open(CACHE_DYNAMIC_NAME).then(cache => {
+      return fetch(e.requset).then(res => {
+        cache.put(e.requset, res.clone());
+        return res;
+      });
+    })
   );
 });
 
