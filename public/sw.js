@@ -43,7 +43,14 @@ self.addEventListener("fetch", e => {
         if (response) {
           return response;
         } else {
-          return fetch(e.request);
+          return fetch(e.request)
+            .then(res => {
+              return caches.open("dynamic").then(cache => {
+                cache.put(e.request.url, res.clone());
+                return res;
+              });
+            })
+            .catch(err => console.log(err));
         }
       })
       .catch(err => console.log(err))
