@@ -1,6 +1,6 @@
 // если мы что-либо изменим в файлах/скриптах, то эти изменения не применятся, так как приложение берёт файлы из кэша, а в кэше у нас всё ещё старая версия файлов, чтобы это исправить нам поможет версионирование, каждый раз когда мы: поменяли стили/изменили скрипты/добавили картинки/html-блок и т.д., нам нужно изменить версию кэша
-var CACHE_STATIC_NAME = "static-v4";
-var CACHE_DYNAMIC_NAME = "dynamic-v3";
+var CACHE_STATIC_NAME = "static-v5";
+var CACHE_DYNAMIC_NAME = "dynamic-v4";
 
 self.addEventListener("install", e => {
   console.log("The service worker is being installed.", e);
@@ -111,7 +111,9 @@ self.addEventListener("fetch", e => {
             .catch(err => {
               // console.log(err);
               return caches.open(CACHE_STATIC_NAME).then(cache => {
-                return cache.match("/offline.html");
+                if (e.request.url.indexOf("/help")) {
+                  return cache.match("/offline.html");
+                }
               });
             });
         }
