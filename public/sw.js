@@ -84,6 +84,15 @@ self.addEventListener("fetch", e => {
 });
 */
 
+function isInArray(string, array) {
+  for (var i = 0; i < array.length; i++) {
+    if (array[i] === string) {
+      return true;
+    }
+  }
+  return false;
+}
+
 // Strategy: Cache then Network & Dynamic caching
 self.addEventListener("fetch", e => {
   var url = "https://httpbin.org/get";
@@ -97,7 +106,7 @@ self.addEventListener("fetch", e => {
         });
       })
     );
-  } else if (new RegExp("\\b" + STATIC_FILES.join("\\b") + "\\b").test(e.request.url)) {
+  } else if (isInArray(e.request.url, STATIC_FILES)) {
     e.respondWith(caches.match(e.request));
   } else {
     e.respondWith(
