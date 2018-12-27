@@ -127,25 +127,38 @@ self.addEventListener("fetch", e => {
     e.respondWith(
       fetch(e.request).then(res => {
         var clonedRes = res.clone();
-        clonedRes.json().then(data => {
-          for (var key in data) {
-            // dbPromise.then(db => {
-            //   // делаем транзакцию, аргументы: 1 - таргет/куда транзакция, 2 - вид транзакции readonly/readwrite
-            //   var tx = db.transaction("posts", "readwrite");
-            //   var store = tx.objectStore("posts");
-            //   // и кладём в стор объект data[key], это примерно: {id: "qwert", title: "qwert", location: "qwert", image: "qwert"}
-            //   // метод .put() вторым параметром принимает ключ по которому записать данные store.put(data[key], "someKey")
-            //   // но в нашем случае его не нужно передавать, т.к. при создании таблицы мы указали типа primary-key keyPath: "id"
-            //   // поэтому в качесте ключа будет автоматически выставляться id, типа store.put(data[key], data[key].id);
-            //   store.put(data[key]);
-            //   return tx.complete;
-            // });
 
-            // вынесли в отдельную функцию в файл utility!!!
-            writeData("posts", data[key]);
-          }
-        });
+        // нам нужно сначала очистить хранилище, а потом уже заполнять свежими данными из firebase, т.к. какие-то данные могли быть удалены непосредственно в самом firebase, но в самом хранилище старые данные уже могли быть закэшированы/сохранены с прошлого раза, тоесть сохранены уже не существующие в базе данные
+        clearAllData("posts")
+          .then(() => {
+            return clonedRes.json();
+          })
+          .then(data => {
+            for (var key in data) {
+              writeData("posts", data[key]);
+            }
+          });
         return res;
+
+        // clonedRes.json().then(data => {
+        //   for (var key in data) {
+        //     // dbPromise.then(db => {
+        //     //   // делаем транзакцию, аргументы: 1 - таргет/куда транзакция, 2 - вид транзакции readonly/readwrite
+        //     //   var tx = db.transaction("posts", "readwrite");
+        //     //   var store = tx.objectStore("posts");
+        //     //   // и кладём в стор объект data[key], это примерно: {id: "qwert", title: "qwert", location: "qwert", image: "qwert"}
+        //     //   // метод .put() вторым параметром принимает ключ по которому записать данные store.put(data[key], "someKey")
+        //     //   // но в нашем случае его не нужно передавать, т.к. при создании таблицы мы указали типа primary-key keyPath: "id"
+        //     //   // поэтому в качесте ключа будет автоматически выставляться id, типа store.put(data[key], data[key].id);
+        //     //   store.put(data[key]);
+        //     //   return tx.complete;
+        //     // });
+
+        //     // вынесли в отдельную функцию в файл utility!!!
+        //     writeData("posts", data[key]);
+        //   }
+        // });
+        // return res;
       })
     );
   } else if (isInArray(e.request.url, STATIC_FILES)) {
