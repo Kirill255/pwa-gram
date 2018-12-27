@@ -106,7 +106,7 @@ function isInArray(string, array) {
 
 // Strategy: Cache then Network & Dynamic caching
 self.addEventListener("fetch", e => {
-  var url = "https://httpbin.org/get";
+  var url = "https://pwa-gram-9114d.firebaseio.com/posts";
 
   if (e.request.url.indexOf(url) > -1) {
     e.respondWith(
