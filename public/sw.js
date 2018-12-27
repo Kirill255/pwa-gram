@@ -1,3 +1,6 @@
+// специальный синтаксис для импорта библиотек в сервисворкер
+importScripts("/src/js/idb.js");
+
 // если мы что-либо изменим в файлах/скриптах, то эти изменения не применятся, так как приложение берёт файлы из кэша, а в кэше у нас всё ещё старая версия файлов, чтобы это исправить нам поможет версионирование, каждый раз когда мы: поменяли стили/изменили скрипты/добавили картинки/html-блок и т.д., нам нужно изменить версию кэша
 var CACHE_STATIC_NAME = "static-v5";
 var CACHE_DYNAMIC_NAME = "dynamic-v4";
@@ -8,6 +11,7 @@ var STATIC_FILES = [
   "/offline.html",
   "/src/js/app.js",
   "/src/js/feed.js",
+  "/src/js/idb.js",
   "/src/js/promise.js",
   "/src/js/fetch.js",
   "/src/js/material.min.js",
@@ -18,6 +22,15 @@ var STATIC_FILES = [
   "https://fonts.googleapis.com/icon?family=Material+Icons",
   "https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css"
 ];
+
+// вверху мы импортировали библиотеку idb, и теперь мы можем работать с ней
+// создаём базу "posts-store", версия 1, создаём типа таблицу в базе с именем posts, назначаем типа primary-key "id",
+// также нужно проверить, существует ли уже такая таблица, перед созданием новой, т.к. idb не делает этого из коробки
+var dbPromise = idb.open("posts-store", 1, db => {
+  if (!db.objectStoreNames.contains("posts")) {
+    db.createObjectStore("posts", { keyPath: "id" });
+  }
+});
 
 // // в кэш не сохраняется больше, например 3 элементов, остальное удаляется можем передать любое число: 10, 25..
 // function trimCache(cacheName, maxItems) {
@@ -110,12 +123,24 @@ self.addEventListener("fetch", e => {
 
   if (e.request.url.indexOf(url) > -1) {
     e.respondWith(
-      caches.open(CACHE_DYNAMIC_NAME).then(cache => {
-        return fetch(e.request).then(res => {
-          // trimCache(CACHE_DYNAMIC_NAME, 3); // обрезать кэш до трёх элементов
-          cache.put(e.request, res.clone());
-          return res;
+      fetch(e.request).then(res => {
+        var clonedRes = res.clone();
+        clonedRes.json().then(data => {
+          for (var key in data) {
+            dbPromise.then(db => {
+              // делаем транзакцию, аргументы: 1 - таргет/куда транзакция, 2 - вид транзакции read/readwrite
+              var tx = db.transaction("posts", "readwrite");
+              var store = tx.objectStore("posts");
+              // и кладём в стор объект data[key], это примерно: {id: "qwert", title: "qwert", location: "qwert", image: "qwert"}
+              // метод .put() вторым параметром принимает ключ по которому записать данные store.put(data[key], "someKey")
+              // но в нашем случае его не нужно передавать, т.к. при создании таблицы мы указали типа primary-key keyPath: "id"
+              // поэтому в качесте ключа будет автоматически выставляться id, типа store.put(data[key], data[key].id);
+              store.put(data[key]);
+              return tx.complete;
+            });
+          }
         });
+        return res;
       })
     );
   } else if (isInArray(e.request.url, STATIC_FILES)) {
