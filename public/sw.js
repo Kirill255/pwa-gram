@@ -135,9 +135,10 @@ self.addEventListener("fetch", e => {
           })
           .then(data => {
             for (var key in data) {
-              writeData("posts", data[key]).then(() => {
-                deleteItemFromData("posts", key); // только для примера как можно удалять отдельные посты, сейчас у нас просто создаётся пост в idb и затем сразу удаляется, это просто пример
-              });
+              writeData("posts", data[key]);
+              // writeData("posts", data[key]).then(() => {
+              //   deleteItemFromData("posts", key); // только для примера как можно удалять отдельные посты, сейчас у нас просто создаётся пост в idb и затем сразу удаляется, это просто пример
+              // });
             }
           });
         return res;
