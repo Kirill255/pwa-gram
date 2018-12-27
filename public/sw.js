@@ -130,7 +130,7 @@ self.addEventListener("fetch", e => {
         clonedRes.json().then(data => {
           for (var key in data) {
             // dbPromise.then(db => {
-            //   // делаем транзакцию, аргументы: 1 - таргет/куда транзакция, 2 - вид транзакции read/readwrite
+            //   // делаем транзакцию, аргументы: 1 - таргет/куда транзакция, 2 - вид транзакции readonly/readwrite
             //   var tx = db.transaction("posts", "readwrite");
             //   var store = tx.objectStore("posts");
             //   // и кладём в стор объект data[key], это примерно: {id: "qwert", title: "qwert", location: "qwert", image: "qwert"}
