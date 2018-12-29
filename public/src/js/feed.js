@@ -2,6 +2,9 @@ var shareImageButton = document.querySelector("#share-image-button");
 var createPostArea = document.querySelector("#create-post");
 var closeCreatePostModalButton = document.querySelector("#close-create-post-modal-btn");
 var sharedMomentsArea = document.querySelector("#shared-moments");
+var form = document.querySelector("#form");
+var inputTitle = document.querySelector("#title");
+var inputLocation = document.querySelector("#location");
 
 function openCreatePostModal() {
   // createPostArea.style.display = "block";
@@ -142,3 +145,37 @@ if ("indexedDB" in window) {
 //       }
 //     });
 // }
+
+form.addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  if (inputTitle.value.trim() === "" || inputLocation.value.trim() === "") {
+    alert("Please, enter valid data!");
+    return;
+  }
+
+  closeCreatePostModal();
+
+  if ("serviceWorker" in navigator && "SyncManager" in window) {
+    navigator.serviceWorker.ready.then(function(sw) {
+      var post = {
+        id: new Date.toISOString(),
+        title: inputTitle.value,
+        location: inputLocation.value
+      };
+      // сохраняем пост в idb
+      writeData("sync-posts", post)
+        .then(function() {
+          return sw.sync.register("sync-new-post"); // синхронизируем sw task
+        })
+        .then(function() {
+          var snackbarContainer = document.querySelector("#confirmation-toast");
+          var data = { message: "Your post was saved for syncing!" };
+          snackbarContainer.MaterialSnackbar.showSnackbar(data);
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
+    });
+  } 
+});
