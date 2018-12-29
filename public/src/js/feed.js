@@ -154,7 +154,7 @@ function sendData() {
       Accept: "application/json"
     },
     body: JSON.stringify({
-      id: new Date.toISOString(),
+      id: new Date().toISOString(),
       title: inputTitle.value,
       location: inputLocation.value,
       image:
@@ -179,14 +179,14 @@ form.addEventListener("submit", function(e) {
   if ("serviceWorker" in navigator && "SyncManager" in window) {
     navigator.serviceWorker.ready.then(function(sw) {
       var post = {
-        id: new Date.toISOString(),
+        id: new Date().toISOString(),
         title: inputTitle.value,
         location: inputLocation.value
       };
       // сохраняем пост в idb
       writeData("sync-posts", post)
         .then(function() {
-          return sw.sync.register("sync-new-post"); // синхронизируем sw task
+          return sw.sync.register("sync-new-posts"); // синхронизируем sw task
         })
         .then(function() {
           var snackbarContainer = document.querySelector("#confirmation-toast");

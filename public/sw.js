@@ -243,3 +243,39 @@ self.addEventListener("fetch", e => {
   );
 });
 */
+
+self.addEventListener("sync", event => {
+  console.log("Service Worker is Background syncing", event);
+  if (event.tag === "sync-new-posts") {
+    console.log("Service Worker is Syncing new Posts");
+    event.waitUntil(
+      readAllData("sync-posts").then(data => {
+        for (var dt of data) {
+          fetch("https://pwa-gram-9114d.firebaseio.com/posts.json", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json"
+            },
+            body: JSON.stringify({
+              id: dt.id,
+              title: dt.title,
+              location: dt.location,
+              image:
+                "https://firebasestorage.googleapis.com/v0/b/pwa-gram-9114d.appspot.com/o/sf-boat.jpg?alt=media&token=804d568a-77d6-4eeb-80e1-87b709bf1ad7"
+            })
+          })
+            .then(res => {
+              console.log("Sent data", res);
+              if (res.ok) {
+                deleteItemFromData("sync-posts", dt.id);
+              }
+            })
+            .catch(err => {
+              console.log("Error while sending data", err);
+            });
+        }
+      })
+    );
+  }
+});
