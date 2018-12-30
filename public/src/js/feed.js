@@ -147,7 +147,7 @@ if ("indexedDB" in window) {
 // }
 
 function sendData() {
-  fetch("https://pwa-gram-9114d.firebaseio.com/posts.json", {
+  fetch("https://us-central1-pwa-gram-9114d.cloudfunctions.net/storePostData", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

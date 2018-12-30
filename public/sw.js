@@ -251,7 +251,7 @@ self.addEventListener("sync", event => {
     event.waitUntil(
       readAllData("sync-posts").then(data => {
         for (var dt of data) {
-          fetch("https://pwa-gram-9114d.firebaseio.com/posts.json", {
+          fetch("https://us-central1-pwa-gram-9114d.cloudfunctions.net/storePostData", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -268,7 +268,10 @@ self.addEventListener("sync", event => {
             .then(res => {
               console.log("Sent data", res);
               if (res.ok) {
-                deleteItemFromData("sync-posts", dt.id);
+                // deleteItemFromData("sync-posts", dt.id);
+                res.json().then(resData => {
+                  deleteItemFromData("sync-posts", resData.id);
+                });
               }
             })
             .catch(err => {

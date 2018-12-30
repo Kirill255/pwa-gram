@@ -52,3 +52,19 @@ Configure as a single-page app (rewrite all urls to /index.html)?
 File public/index.html already exists. Overwrite?
 
 `No`
+
+## Firebase functions deploy
+
+Inside `functions` folder run `firebase deploy`
+
+Then we must change our url in fetch requests to received Function URL (storePostData): `https://us-central1-pwa-gram-9114d.cloudfunctions.net/storePostData`
+
+#### Then
+
+Go to this [page](https://console.firebase.google.com/project/pwa-gram-9114d/settings/serviceaccounts/adminsdk)
+
+`Настройки проекта > Сервисные аккаунты` and set project in index.js in functions folder
+
+We must also to generate a new key and move him to functions folder
+
+And then inside functions folder run `firebase deploy` again
