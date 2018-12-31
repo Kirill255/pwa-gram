@@ -27,12 +27,24 @@ window.addEventListener("beforeinstallprompt", e => {
   return false;
 });
 
+// function displayConfirmNotification() {
+//   var options = {
+//     body: "You successfully subscribed to our Notification service!"
+//   };
+//   // new Notification("Successfully subscribed!"); // without options
+//   new Notification("Successfully subscribed!", options);
+// }
+
 function displayConfirmNotification() {
-  var options = {
-    body: "You successfully subscribed to our Notification service!"
-  };
-  // new Notification("Successfully subscribed!"); // without options
-  new Notification("Successfully subscribed!", options);
+  if ("serviceWorker" in navigator) {
+    var options = {
+      body: "You successfully subscribed to our Notification service!"
+    };
+
+    navigator.serviceWorker.ready.then(function(swreg) {
+      swreg.showNotification("Successfully subscribed (from SW)!", options);
+    });
+  }
 }
 
 function askForNotificationPermission() {
