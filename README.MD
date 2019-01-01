@@ -69,6 +69,10 @@ We must also to generate a new key and move him to functions folder
 
 And then inside functions folder run `firebase deploy` again
 
+#### Note
+
+After each change in the index.js in functions folder file you need to redeploy
+
 ## Web-push
 
 Install `web-push` inside functions folder and add web-push start script to package.json `"web-push": "web-push"`, then generate vapid keys `npm run web-push generate-vapid-keys`
