@@ -72,3 +72,5 @@ And then inside functions folder run `firebase deploy` again
 ## Web-push
 
 Install `web-push` inside functions folder and add web-push start script to package.json `"web-push": "web-push"`, then generate vapid keys `npm run web-push generate-vapid-keys`
+
+After setting up the project you need to redeploy app, run `firebase deploy` in root folder
