@@ -68,3 +68,7 @@ Go to this [page](https://console.firebase.google.com/project/pwa-gram-9114d/set
 We must also to generate a new key and move him to functions folder
 
 And then inside functions folder run `firebase deploy` again
+
+## Web-push
+
+Install `web-push` inside functions folder and add web-push start script to package.json `"web-push": "web-push"`, then generate vapid keys `npm run web-push generate-vapid-keys`
