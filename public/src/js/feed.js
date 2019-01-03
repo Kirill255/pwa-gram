@@ -10,6 +10,7 @@ var canvasElement = document.querySelector("#canvas");
 var captureButton = document.querySelector("#capture-btn");
 var imagePicker = document.querySelector("#image-picker");
 var imagePickerArea = document.querySelector("#pick-image");
+var picture;
 
 function initializeMedia() {
   if (!("mediaDevices" in navigator)) {
@@ -61,6 +62,8 @@ captureButton.addEventListener("click", function(event) {
   videoPlayer.srcObject.getVideoTracks().forEach(function(track) {
     track.stop();
   });
+
+  picture = dataURItoBlob(canvasElement.toDataURL());
 });
 
 function openCreatePostModal() {
@@ -208,19 +211,29 @@ if ("indexedDB" in window) {
 // }
 
 function sendData() {
+  var id = new Date().toISOString();
+
+  var postData = new FormData();
+  // postData.append("id", new Date().toISOString());
+  postData.append("id", id);
+  postData.append("title", inputTitle.value);
+  postData.append("location", inputLocation.value);
+  postData.append("file", picture, id + ".png");
+
   fetch("https://us-central1-pwa-gram-9114d.cloudfunctions.net/storePostData", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    },
-    body: JSON.stringify({
-      id: new Date().toISOString(),
-      title: inputTitle.value,
-      location: inputLocation.value,
-      image:
-        "https://firebasestorage.googleapis.com/v0/b/pwa-gram-9114d.appspot.com/o/sf-boat.jpg?alt=media&token=804d568a-77d6-4eeb-80e1-87b709bf1ad7"
-    })
+    // headers: {
+    //   "Content-Type": "application/json",
+    //   Accept: "application/json"
+    // },
+    // body: JSON.stringify({
+    //   id: new Date().toISOString(),
+    //   title: inputTitle.value,
+    //   location: inputLocation.value,
+    //   image:
+    //     "https://firebasestorage.googleapis.com/v0/b/pwa-gram-9114d.appspot.com/o/sf-boat.jpg?alt=media&token=804d568a-77d6-4eeb-80e1-87b709bf1ad7"
+    // })
+    body: postData
   }).then(function(res) {
     console.log("Sent data", res);
     updateUI();
@@ -242,7 +255,8 @@ form.addEventListener("submit", function(e) {
       var post = {
         id: new Date().toISOString(),
         title: inputTitle.value,
-        location: inputLocation.value
+        location: inputLocation.value,
+        picture: picture
       };
       // сохраняем пост в idb
       writeData("sync-posts", post)

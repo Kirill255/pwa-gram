@@ -251,19 +251,26 @@ self.addEventListener("sync", event => {
     event.waitUntil(
       readAllData("sync-posts").then(data => {
         for (var dt of data) {
+          var postData = new FormData();
+          postData.append("id", dt.id);
+          postData.append("title", dt.title);
+          postData.append("location", dt.location);
+          postData.append("file", dt.picture, dt.id + ".png");
+
           fetch("https://us-central1-pwa-gram-9114d.cloudfunctions.net/storePostData", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json"
-            },
-            body: JSON.stringify({
-              id: dt.id,
-              title: dt.title,
-              location: dt.location,
-              image:
-                "https://firebasestorage.googleapis.com/v0/b/pwa-gram-9114d.appspot.com/o/sf-boat.jpg?alt=media&token=804d568a-77d6-4eeb-80e1-87b709bf1ad7"
-            })
+            // headers: {
+            //   "Content-Type": "application/json",
+            //   Accept: "application/json"
+            // },
+            // body: JSON.stringify({
+            //   id: dt.id,
+            //   title: dt.title,
+            //   location: dt.location,
+            //   image:
+            //     "https://firebasestorage.googleapis.com/v0/b/pwa-gram-9114d.appspot.com/o/sf-boat.jpg?alt=media&token=804d568a-77d6-4eeb-80e1-87b709bf1ad7"
+            // })
+            body: postData
           })
             .then(res => {
               console.log("Sent data", res);
