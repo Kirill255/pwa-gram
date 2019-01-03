@@ -6,7 +6,7 @@ var form = document.querySelector("#form");
 var inputTitle = document.querySelector("#title");
 var inputLocation = document.querySelector("#location");
 var videoPlayer = document.querySelector("#player");
-var canvas = document.querySelector("#canvas");
+var canvasElement = document.querySelector("#canvas");
 var captureButton = document.querySelector("#capture-btn");
 var imagePicker = document.querySelector("#image-picker");
 var imagePickerArea = document.querySelector("#pick-image");
@@ -40,6 +40,28 @@ function initializeMedia() {
       imagePickerArea.style.display = "block";
     });
 }
+
+// при клике на кнопку
+captureButton.addEventListener("click", function(event) {
+  canvasElement.style.display = "block"; // отображаем холст
+  videoPlayer.style.display = "none"; // скрываем видео
+  captureButton.style.display = "none"; // скрываем кнопку
+
+  // рисуем в канвасе наш snapshot (фото с камеры)
+  var context = canvasElement.getContext("2d");
+  context.drawImage(
+    videoPlayer,
+    0,
+    0,
+    canvas.width,
+    videoPlayer.videoHeight / (videoPlayer.videoWidth / canvas.width)
+  );
+
+  // videoPlayer.srcObject = null;
+  videoPlayer.srcObject.getVideoTracks().forEach(function(track) {
+    track.stop();
+  });
+});
 
 function openCreatePostModal() {
   // createPostArea.style.display = "block";
@@ -77,6 +99,7 @@ function closeCreatePostModal() {
   createPostArea.style.transform = "translateY(100vh)";
   imagePickerArea.style.display = "none";
   videoPlayer.style.display = "none";
+  canvasElement.style.display = "none";
   // createPostArea.style.display = "none";
 }
 
