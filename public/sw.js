@@ -11,6 +11,7 @@ var STATIC_FILES = [
   "/index.html",
   "/offline.html",
   "/src/js/app.js",
+  "/src/js/utility.js",
   "/src/js/feed.js",
   "/src/js/idb.js",
   "/src/js/promise.js",

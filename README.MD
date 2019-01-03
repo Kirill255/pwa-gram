@@ -78,3 +78,7 @@ After each change in the index.js in functions folder file you need to redeploy
 Install `web-push` inside functions folder and add web-push start script to package.json `"web-push": "web-push"`, then generate vapid keys `npm run web-push generate-vapid-keys`
 
 After setting up the project you need to redeploy app, run `firebase deploy` in root folder
+
+### google-cloud/storage
+
+After setting up the project you need to redeploy app, run `firebase deploy` in root folder
