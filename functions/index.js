@@ -10,12 +10,16 @@ var UUID = require("uuid-v4");
 
 var fs = require("fs");
 
+var FIREBASE_PUBLIC_KEY =
+  "BMrfb7ujhKZE1zOPhgRNT2Ksmd24lQrDmVMa2e9pyfpA8uhclSF7kfaX_aopKJZgVCVKJharOu7gmkaIrNPMqq0";
+var FIREBASE_PRIVATE_KEY = "QO4jEn44VqzqbO0rt0kPb7ct7tgyvdh5dUOef6DfBVg";
+
 // https://console.firebase.google.com/project/pwa-gram-9114d/settings/serviceaccounts/adminsdk
 const serviceAccount = require("./pwa-gram-9114d-fb-key.json");
 
 var gcconfig = {
   projectId: "pwa-gram-9114d", // https://console.firebase.google.com/project/pwa-gram-9114d/settings/general/
-  keyFilename: "pwagram-fb-key.json" // without "/", like "./pwa-gram-9114d-fb-key.json"
+  keyFilename: "pwa-gram-9114d-fb-key.json" // without "/", like "./pwa-gram-9114d-fb-key.json"
 };
 
 var gcs = require("@google-cloud/storage")(gcconfig);
@@ -35,22 +39,30 @@ exports.storePostData = functions.https.onRequest((request, response) => {
 
     var formData = new formidable.IncomingForm();
     formData.parse(request, (err, fields, files) => {
-      fs.rename(files.file.path, "/tmp/" + files.file.name);
+      if (err) throw err;
+      console.log("files :", files);
+      console.log("fields :", fields);
 
-      var bucket = gcs.bucket("pwa-gram-9114d.appspot.com");
-      bucket.upload(
-        "/tmp/" + files.file.name,
-        {
-          uploadType: "media",
-          metadata: {
+      // fs.rename(files.file.path, "/tmp/" + files.file.name);
+      fs.rename(files.file.path, "/tmp/" + files.file.name, err => {
+        if (err) throw err;
+        console.log("Rename complete!");
+
+        var bucket = gcs.bucket("pwa-gram-9114d.appspot.com");
+        bucket.upload(
+          "/tmp/" + files.file.name,
+          {
+            uploadType: "media",
             metadata: {
-              contentType: files.file.type,
-              firebaseStorageDownloadTokens: uuid
+              metadata: {
+                contentType: files.file.type,
+                firebaseStorageDownloadTokens: uuid
+              }
             }
-          }
-        },
-        (err, file) => {
-          if (!err) {
+          },
+          (err, file) => {
+            if (err) throw err;
+
             // ссылка на картинку в сторадже получится примерно такая https://firebasestorage.googleapis.com/v0/b/pwa-gram-9114d.appspot.com/o/car1.jpg?alt=media&token=201528cb-ae1b-4b9e-a248-b96fcc52a82f
 
             admin
@@ -70,9 +82,9 @@ exports.storePostData = functions.https.onRequest((request, response) => {
               })
               .then(() => {
                 webpush.setVapidDetails(
-                  "mailto:business@academind.com", // must be your a real valid email adress
-                  "BMrfb7ujhKZE1zOPhgRNT2Ksmd24lQrDmVMa2e9pyfpA8uhclSF7kfaX_aopKJZgVCVKJharOu7gmkaIrNPMqq0", // Public Key
-                  "QO4jEn44VqzqbO0rt0kPb7ct7tgyvdh5dUOef6DfBVg" // Private Key
+                  "mailto:jhgbnm1@mail.ru", // must be your a real valid email adress
+                  FIREBASE_PUBLIC_KEY,
+                  FIREBASE_PRIVATE_KEY
                 );
                 return admin
                   .database()
@@ -108,11 +120,9 @@ exports.storePostData = functions.https.onRequest((request, response) => {
               .catch(err => {
                 response.status(500).json({ error: err });
               });
-          } else {
-            console.log(err);
           }
-        }
-      );
+        );
+      });
     });
   });
 });
