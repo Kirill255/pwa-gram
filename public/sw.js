@@ -3,8 +3,8 @@ importScripts("/src/js/idb.js");
 importScripts("/src/js/utility.js");
 
 // если мы что-либо изменим в файлах/скриптах, то эти изменения не применятся, так как приложение берёт файлы из кэша, а в кэше у нас всё ещё старая версия файлов, чтобы это исправить нам поможет версионирование, каждый раз когда мы: поменяли стили/изменили скрипты/добавили картинки/html-блок и т.д., нам нужно изменить версию кэша
-var CACHE_STATIC_NAME = "static-v7";
-var CACHE_DYNAMIC_NAME = "dynamic-v6";
+var CACHE_STATIC_NAME = "static-v11";
+var CACHE_DYNAMIC_NAME = "dynamic-v9";
 
 var STATIC_FILES = [
   "/",
@@ -256,6 +256,8 @@ self.addEventListener("sync", event => {
           postData.append("id", dt.id);
           postData.append("title", dt.title);
           postData.append("location", dt.location);
+          postData.append("rawLocationLat", dt.rawLocation.lat);
+          postData.append("rawLocationLng", dt.rawLocation.lng);
           postData.append("file", dt.picture, dt.id + ".png");
 
           fetch("https://us-central1-pwa-gram-9114d.cloudfunctions.net/storePostData", {

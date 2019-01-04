@@ -39,20 +39,20 @@ exports.storePostData = functions.https.onRequest((request, response) => {
 
     var formData = new formidable.IncomingForm();
     formData.parse(request, (err, fields, files) => {
-      if (err) throw err;
-      console.log("files :", files);
-      console.log("fields :", fields);
+      if (err) return new Error(err);
+      // console.log("files :", files);
+      // console.log("fields :", fields);
 
       // fs.rename(files.file.path, "/tmp/" + files.file.name);
       fs.rename(files.file.path, "/tmp/" + files.file.name, err => {
-        if (err) throw err;
-        console.log("Rename complete!");
+        if (err) return new Error(err);
+        // console.log("Rename complete!");
 
         var bucket = gcs.bucket("pwa-gram-9114d.appspot.com");
         bucket.upload(
           "/tmp/" + files.file.name,
           {
-            uploadType: "media",
+            // uploadType: "media",
             metadata: {
               metadata: {
                 contentType: files.file.type,
@@ -61,7 +61,7 @@ exports.storePostData = functions.https.onRequest((request, response) => {
             }
           },
           (err, file) => {
-            if (err) throw err;
+            if (err) return new Error(err);
 
             // ссылка на картинку в сторадже получится примерно такая https://firebasestorage.googleapis.com/v0/b/pwa-gram-9114d.appspot.com/o/car1.jpg?alt=media&token=201528cb-ae1b-4b9e-a248-b96fcc52a82f
 
@@ -72,6 +72,10 @@ exports.storePostData = functions.https.onRequest((request, response) => {
                 id: fields.id,
                 title: fields.title,
                 location: fields.location,
+                rawLocation: {
+                  lat: fields.rawLocationLat,
+                  lng: fields.rawLocationLng
+                },
                 image:
                   "https://firebasestorage.googleapis.com/v0/b/" +
                   bucket.name +
