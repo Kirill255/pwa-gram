@@ -22,7 +22,9 @@ var gcconfig = {
   keyFilename: "pwagram-fb-key.json" // without "/", like "./pwa-gram-9114d-fb-key.json"
 };
 
-var gcs = require("@google-cloud/storage")(gcconfig);
+// var gcs = require("@google-cloud/storage")(gcconfig);
+var { Storage } = require("@google-cloud/storage");
+var gcs = new Storage(gcconfig);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
