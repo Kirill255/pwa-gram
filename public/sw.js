@@ -122,7 +122,7 @@ function isInArray(string, array) {
 
 // Strategy: Cache then Network & Dynamic caching
 self.addEventListener("fetch", e => {
-  var url = "https://pwa-gram-9114d.firebaseio.com/posts";
+  var url = "https://pwagram-24f0c.firebaseio.com/posts";
 
   if (e.request.url.indexOf(url) > -1) {
     e.respondWith(
@@ -260,7 +260,7 @@ self.addEventListener("sync", event => {
           postData.append("rawLocationLng", dt.rawLocation.lng);
           postData.append("file", dt.picture, dt.id + ".png");
 
-          fetch("https://us-central1-pwa-gram-9114d.cloudfunctions.net/storePostData", {
+          fetch("https://us-central1-pwagram-24f0c.cloudfunctions.net/storePostData", {
             method: "POST",
             // headers: {
             //   "Content-Type": "application/json",

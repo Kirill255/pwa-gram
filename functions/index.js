@@ -15,18 +15,18 @@ var FIREBASE_PUBLIC_KEY =
 var FIREBASE_PRIVATE_KEY = "QO4jEn44VqzqbO0rt0kPb7ct7tgyvdh5dUOef6DfBVg";
 
 // https://console.firebase.google.com/project/pwa-gram-9114d/settings/serviceaccounts/adminsdk
-const serviceAccount = require("./pwa-gram-9114d-fb-key.json");
+const serviceAccount = require("./pwagram-fb-key.json");
 
 var gcconfig = {
-  projectId: "pwa-gram-9114d", // https://console.firebase.google.com/project/pwa-gram-9114d/settings/general/
-  keyFilename: "pwa-gram-9114d-fb-key.json" // without "/", like "./pwa-gram-9114d-fb-key.json"
+  projectId: "pwagram-24f0c", // https://console.firebase.google.com/project/pwa-gram-9114d/settings/general/
+  keyFilename: "pwagram-fb-key.json" // without "/", like "./pwa-gram-9114d-fb-key.json"
 };
 
 var gcs = require("@google-cloud/storage")(gcconfig);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://pwa-gram-9114d.firebaseio.com"
+  databaseURL: "https://pwagram-24f0c.firebaseio.com"
 });
 
 // // Create and Deploy Your First Cloud Functions
@@ -48,7 +48,7 @@ exports.storePostData = functions.https.onRequest((request, response) => {
         if (err) return new Error(err);
         // console.log("Rename complete!");
 
-        var bucket = gcs.bucket("pwa-gram-9114d.appspot.com");
+        var bucket = gcs.bucket("pwagram-24f0c.appspot.com");
         bucket.upload(
           "/tmp/" + files.file.name,
           {

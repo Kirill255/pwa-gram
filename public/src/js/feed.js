@@ -226,7 +226,7 @@ function updateUI(data) {
 
 // создали базу в firebase, создали запись вручную, скопировали ссылку на неё, важно! нужно добавить расширение .json
 // мы пока не используем firebase-клиенты, просто с помощью fetch делаем запрос на данный url
-var url = "https://pwa-gram-9114d.firebaseio.com/posts.json";
+var url = "https://pwagram-24f0c.firebaseio.com/posts.json";
 var networkDataReceived = false;
 
 fetch(url)
@@ -285,7 +285,7 @@ function sendData() {
   postData.append("rawLocationLng", fetchedLocation.lng);
   postData.append("file", picture, id + ".png");
 
-  fetch("https://us-central1-pwa-gram-9114d.cloudfunctions.net/storePostData", {
+  fetch("https://us-central1-pwagram-24f0c.cloudfunctions.net/storePostData", {
     method: "POST",
     // headers: {
     //   "Content-Type": "application/json",
