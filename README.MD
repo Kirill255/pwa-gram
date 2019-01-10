@@ -82,3 +82,7 @@ After setting up the project you need to redeploy app, run `firebase deploy` in 
 ### google-cloud/storage
 
 After setting up the project you need to redeploy app, run `firebase deploy` in root folder
+
+### formidable and busboy
+
+Почему-то я не смог запустить formidable, доходит до момента `Service Worker is Syncing new Posts`, пост сохраняется в idb.js(тоесть локально, т.к. не может свзяаться с базой) и не приходит уведомление(что пост отправлен/создан), идёт какая-то ошибка с кросдоменным запросом(хотя делаю через cors) и как следствие firebase не запускает функцию на free плане(т.к. firebase-функция не запустилась, то пост не сохранился в базу, а сохранился локально), так как там(на free плане) ограничены запросы к сторонним ресурсам, в чём причина не разбирался! переписал на busboy
