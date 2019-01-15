@@ -86,3 +86,39 @@ After setting up the project you need to redeploy app, run `firebase deploy` in 
 ### formidable and busboy
 
 Почему-то я не смог запустить formidable, доходит до момента `Service Worker is Syncing new Posts`, пост сохраняется в idb.js(тоесть локально, т.к. не может свзяаться с базой) и не приходит уведомление(что пост отправлен/создан), идёт какая-то ошибка с кросдоменным запросом(хотя делаю через cors) и как следствие firebase не запускает функцию на free плане(т.к. firebase-функция не запустилась, то пост не сохранился в базу, а сохранился локально), так как там(на free плане) ограничены запросы к сторонним ресурсам, в чём причина не разбирался! переписал на busboy
+
+## Workbox
+
+https://developers.google.com/web/tools/workbox/guides/generate-service-worker/cli
+
+Установили локально `npm install workbox-cli -D`
+
+Note: были проблемы с настройкой конфигураций `workbox wizard` на windows, решено установкой beta версии https://github.com/GoogleChrome/workbox/issues/1542
+
+#### Then
+
+- Нужно настроить конфигурацию, в версии 3.6.3 это команада `workbox wizard`, в версии 2+ , было `workbox generate:sw`
+
+What is the root of your web app (i.e. which directory do you deploy)?
+
+`public/`
+
+Which file types would you like to precache?
+
+`выбираем все файлы(они по умолчанию выбраны все, так что просто жмём enter)`
+
+Where would you like your service worker file to be saved?
+
+```
+public/sevice-worker.js
+
+меняем имя файла, так как не хотим переписывать свой существующий sw.js файл
+```
+
+Where would you like to save these configuration options? (workbox-config.js)
+
+`просто enter`
+
+- В результате мы получим workbox-config.js в корне проекта и дальше нужно сгенерировать sw-файл
+
+`workbox generateSW workbox-config.js`
