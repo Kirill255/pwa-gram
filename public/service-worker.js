@@ -1,24 +1,7 @@
-/**
- * Welcome to your Workbox-powered service worker!
- *
- * You'll need to register this file in your web app and you should
- * disable HTTP caching for this file too.
- * See https://goo.gl/nhQhGp
- *
- * The rest of the code is auto-generated. Please don't update this file
- * directly; instead, make changes to your Workbox build configuration
- * and re-run your build process.
- * See https://goo.gl/2aRDsh
- */
-
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.0.0-beta.0/workbox-sw.js");
 
-/**
- * The workboxSW.precacheAndRoute() method efficiently caches and responds to
- * requests for URLs in the manifest.
- * See https://goo.gl/S9QRab
- */
-self.__precacheManifest = [
+workbox.precaching.suppressWarnings();
+workbox.precaching.precacheAndRoute([
   {
     "url": "404.html",
     "revision": "a4e2271d19eb1f6f93a15e1b7a4e74dd"
@@ -80,6 +63,10 @@ self.__precacheManifest = [
     "revision": "61d04f84525d99f106351c926762c04c"
   },
   {
+    "url": "sw-base.js",
+    "revision": "122adf98ab62f4c9b15bfbf62ad2c3fd"
+  },
+  {
     "url": "sw.js",
     "revision": "25f3caa9b2aaab87b73a96eff0493690"
   },
@@ -99,6 +86,4 @@ self.__precacheManifest = [
     "url": "src/images/sf-boat.jpg",
     "revision": "0f282d64b0fb306daf12050e812d6a19"
   }
-].concat(self.__precacheManifest || []);
-workbox.precaching.suppressWarnings();
-workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
+], {});

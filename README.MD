@@ -122,3 +122,13 @@ Where would you like to save these configuration options? (workbox-config.js)
 - В результате мы получим workbox-config.js в корне проекта и дальше нужно сгенерировать sw-файл
 
 `workbox generateSW workbox-config.js`
+
+- Customizing the service worker
+
+Вместо `workbox generateSW workbox-config.js` запускаем команду `workbox injectManifest workbox-config.js`, предварительно добавляем свои собственные настройки в файл `sw-base.js`, а также добавляем в конфиг `workbox-config.js` путь к нашим настройкам `swSrc: "public/sw-base.js",`
+
+#### Note
+
+https://developers.google.com/web/tools/workbox/modules/workbox-cli#configuration
+
+https://developers.google.com/web/tools/workbox/guides/migrations/migrate-from-v2
