@@ -7,7 +7,8 @@ if (!window.Promise) {
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
-    .register("/sw.js")
+    // .register("/sw.js")
+    .register("/service-worker.js")
     .then(function(reg) {
       // регистрация сработала
       console.log("Registration succeeded. Scope is " + reg.scope);
