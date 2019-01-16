@@ -129,6 +129,8 @@ Where would you like to save these configuration options? (workbox-config.js)
 
 #### Note
 
+При изменении конфига или базовых настроек, нужно сгенерировать новый `service-worker.js`
+
 https://developers.google.com/web/tools/workbox/modules/workbox-cli#configuration
 
 https://developers.google.com/web/tools/workbox/guides/migrations/migrate-from-v2
