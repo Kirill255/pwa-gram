@@ -1,5 +1,8 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.0.0-beta.0/workbox-sw.js");
 
+importScripts("/src/js/idb.js");
+importScripts("/src/js/utility.js");
+
 // при генерации service-worker.js, workbox автоматически кеширует файлы находящиеся в public/ согласно конфигу, но также нам нужно закешировать и cdn-ресурсы(url), которые мы подключаем в index.html, также как мы это делали в sw.js
 
 // в качестве роута может быть регулярка или просто строка
@@ -32,6 +35,24 @@ workbox.routing.registerRoute(
     cacheName: "post-images"
   })
 );
+
+// idb
+workbox.routing.registerRoute("https://pwagram-24f0c.firebaseio.com/posts.json", args => {
+  return fetch(args.e.request).then(res => {
+    var clonedRes = res.clone();
+
+    clearAllData("posts")
+      .then(() => {
+        return clonedRes.json();
+      })
+      .then(data => {
+        for (var key in data) {
+          writeData("posts", data[key]);
+        }
+      });
+    return res;
+  });
+});
 
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute([
@@ -97,7 +118,7 @@ workbox.precaching.precacheAndRoute([
   },
   {
     "url": "sw-base.js",
-    "revision": "b23191c6693087ee5f5c4bbb79cd8db7"
+    "revision": "f597380b6bead95ac1ace03750500964"
   },
   {
     "url": "sw.js",
