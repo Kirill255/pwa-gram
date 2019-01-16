@@ -140,3 +140,5 @@ https://developers.google.com/web/tools/workbox/reference-docs/latest/workbox.st
 https://developers.google.com/web/tools/workbox/reference-docs/latest/workbox.strategies.StaleWhileRevalidate
 
 https://developers.google.com/web/tools/workbox/guides/using-plugins
+
+Конечно же sw.js нам больше не нужен, теперь в качестве сервис-воркера мы используем service-worker.js и workbox

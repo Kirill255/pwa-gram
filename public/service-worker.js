@@ -81,6 +81,8 @@ workbox.routing.registerRoute(
   }
 );
 
+// before precache
+
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute([
   {
@@ -145,7 +147,7 @@ workbox.precaching.precacheAndRoute([
   },
   {
     "url": "sw-base.js",
-    "revision": "74d52d1cbc76fc05299a050858547881"
+    "revision": "dcaf3453eb3f118b5a2eedef2356bf88"
   },
   {
     "url": "sw.js",
@@ -168,3 +170,99 @@ workbox.precaching.precacheAndRoute([
     "revision": "0f282d64b0fb306daf12050e812d6a19"
   }
 ], {});
+
+// after precache
+
+self.addEventListener("sync", event => {
+  console.log("Service Worker is Background syncing", event);
+  if (event.tag === "sync-new-posts") {
+    console.log("Service Worker is Syncing new Posts");
+    event.waitUntil(
+      readAllData("sync-posts").then(data => {
+        for (var dt of data) {
+          var postData = new FormData();
+          postData.append("id", dt.id);
+          postData.append("title", dt.title);
+          postData.append("location", dt.location);
+          postData.append("rawLocationLat", dt.rawLocation.lat);
+          postData.append("rawLocationLng", dt.rawLocation.lng);
+          postData.append("file", dt.picture, dt.id + ".png");
+
+          fetch("https://us-central1-pwagram-24f0c.cloudfunctions.net/storePostData", {
+            method: "POST",
+            body: postData
+          })
+            .then(res => {
+              console.log("Sent data", res);
+              if (res.ok) {
+                // deleteItemFromData("sync-posts", dt.id);
+                res.json().then(resData => {
+                  deleteItemFromData("sync-posts", resData.id);
+                });
+              }
+            })
+            .catch(err => {
+              console.log("Error while sending data", err);
+            });
+        }
+      })
+    );
+  }
+});
+
+self.addEventListener("notificationclick", event => {
+  var notification = event.notification;
+  var action = event.action;
+
+  console.log(notification);
+
+  if (action === "confirm") {
+    console.log("Confirm was chosen");
+    notification.close();
+  } else {
+    console.log(action);
+    // notification.close();
+
+    event.waitUntil(
+      clients.matchAll().then(clis => {
+        var client = clis.find(c => {
+          return c.visibilityState === "visible";
+        });
+
+        if (client !== undefined) {
+          client.navigate(notification.data.url);
+          client.focus();
+        } else {
+          clients.openWindow(notification.data.url);
+        }
+
+        notification.close();
+      })
+    );
+  }
+});
+
+self.addEventListener("notificationclose", event => {
+  console.log("Notification was closed", event);
+});
+
+self.addEventListener("push", event => {
+  console.log("Push Notification received", event);
+
+  var data = { title: "New!", content: "Something new happened!", openUrl: "/" };
+
+  if (event.data) {
+    data = JSON.parse(event.data.text());
+  }
+
+  var options = {
+    body: data.content,
+    icon: "/src/images/icons/app-icon-96x96.png",
+    badge: "/src/images/icons/app-icon-96x96.png",
+    data: {
+      url: data.openUrl
+    }
+  };
+
+  event.waitUntil(self.registration.showNotification(data.title, options));
+});
