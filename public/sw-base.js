@@ -38,7 +38,7 @@ workbox.routing.registerRoute(
 
 // idb
 workbox.routing.registerRoute("https://pwagram-24f0c.firebaseio.com/posts.json", args => {
-  return fetch(args.e.request).then(res => {
+  return fetch(args.event.request).then(res => {
     var clonedRes = res.clone();
 
     clearAllData("posts")
@@ -57,17 +57,17 @@ workbox.routing.registerRoute("https://pwagram-24f0c.firebaseio.com/posts.json",
 workbox.routing.registerRoute(
   routeData => {
     // return true;
-    return routeData.e.request.headers.get("accept").includes("text/html");
+    return routeData.event.request.headers.get("accept").includes("text/html");
   },
   args => {
-    return caches.match(args.e.request).then(response => {
+    return caches.match(args.event.request).then(response => {
       if (response) {
         return response;
       } else {
-        return fetch(args.e.request)
+        return fetch(args.event.request)
           .then(res => {
             return caches.open("dynamic").then(cache => {
-              cache.put(args.e.request.url, res.clone());
+              cache.put(args.event.request.url, res.clone());
               return res;
             });
           })
