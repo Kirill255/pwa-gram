@@ -134,3 +134,9 @@ Where would you like to save these configuration options? (workbox-config.js)
 https://developers.google.com/web/tools/workbox/modules/workbox-cli#configuration
 
 https://developers.google.com/web/tools/workbox/guides/migrations/migrate-from-v2
+
+https://developers.google.com/web/tools/workbox/reference-docs/latest/workbox.strategies
+
+https://developers.google.com/web/tools/workbox/reference-docs/latest/workbox.strategies.StaleWhileRevalidate
+
+https://developers.google.com/web/tools/workbox/guides/using-plugins

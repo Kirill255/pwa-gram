@@ -7,7 +7,13 @@ importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.0.0-beta.0/
 workbox.routing.registerRoute(
   /.*(?:googleapis|gstatic)\.com.*$/,
   workbox.strategies.staleWhileRevalidate({
-    cacheName: "google-fonts" // имя придумываем сами
+    cacheName: "google-fonts", // имя придумываем сами
+    plugins: [
+      new workbox.expiration.Plugin({
+        maxEntries: 3,
+        maxAgeSeconds: 60 * 60 * 24 * 30 // 30 Days (s * m * h * d)
+      })
+    ]
   })
 );
 
