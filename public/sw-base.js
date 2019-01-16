@@ -54,5 +54,32 @@ workbox.routing.registerRoute("https://pwagram-24f0c.firebaseio.com/posts.json",
   });
 });
 
+workbox.routing.registerRoute(
+  routeData => {
+    // return true;
+    return routeData.e.request.headers.get("accept").includes("text/html");
+  },
+  args => {
+    return caches.match(args.e.request).then(response => {
+      if (response) {
+        return response;
+      } else {
+        return fetch(args.e.request)
+          .then(res => {
+            return caches.open("dynamic").then(cache => {
+              cache.put(args.e.request.url, res.clone());
+              return res;
+            });
+          })
+          .catch(err => {
+            return caches.match("/offline.html").then(res => {
+              return res;
+            });
+          });
+      }
+    });
+  }
+);
+
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute([], {});
