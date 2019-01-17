@@ -142,3 +142,48 @@ https://developers.google.com/web/tools/workbox/reference-docs/latest/workbox.st
 https://developers.google.com/web/tools/workbox/guides/using-plugins
 
 Конечно же sw.js нам больше не нужен, теперь в качестве сервис-воркера мы используем service-worker.js и workbox
+
+## Related links
+
+Про formidable и busboy
+
+https://stackoverflow.com/questions/50553493/firebase-function-with-formidable-has-the-file-object-undefined
+
+https://stackoverflow.com/questions/45098305/firebase-cloud-function-for-file-upload/45253054
+
+https://cloud.google.com/functions/docs/writing/http#multipart_data
+
+Upload files:
+
+https://cloud.google.com/nodejs/docs/reference/storage/2.3.x/Bucket#upload
+
+https://github.com/googleapis/nodejs-storage/issues/395
+
+https://github.com/googleapis/nodejs-storage/issues/355
+
+https://github.com/googleapis/nodejs-storage/releases/tag/v2.0.0
+
+https://github.com/googleapis/nodejs-storage/issues/506
+
+https://github.com/googleapis/nodejs-storage/issues/312
+
+https://github.com/googleapis/nodejs-storage/issues/505
+
+Repos:
+
+https://github.com/ittus/pwa-training/tree/master/project-starting-setup
+
+https://github.com/maniksharma98144/PWAGram
+
+https://github.com/nfgoto/pwagram
+
+https://github.com/rovchynnyk/pwagram
+
+Other:
+
+https://stackoverflow.com/questions/53366474/new-project-not-showing-on-firebase-cli
+
+https://firebase.google.com/docs/functions/quotas
+
+https://stackoverflow.com/questions/44414185/insufficient-tokens-for-quota-administrator-and-limit-client-project-100s-of
+https://console.cloud.google.com/iam-admin/quotas
